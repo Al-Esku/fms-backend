@@ -1,12 +1,12 @@
 package com.fencing.midsouth.fmswebsite.repository;
 
-import com.fencing.midsouth.fmswebsite.model.entity.Club;
+import com.fencing.midsouth.fmswebsite.model.entity.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface ClubRepository extends CrudRepository<Club, Long> {
-    Optional<Club> findClubByShortName(String name);
+public interface RoleRepository extends CrudRepository<Role, Long> {
+    Optional<Role> findByName(String name);
 }

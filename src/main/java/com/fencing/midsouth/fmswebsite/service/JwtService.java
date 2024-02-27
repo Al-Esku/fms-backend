@@ -1,7 +1,8 @@
 package com.fencing.midsouth.fmswebsite.service;
 
-import com.fencing.midsouth.fmswebsite.component.JwtTokenFilter;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import java.util.*;
 public class JwtService {
 
     private final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build(); //TODO: Look into securing this
-    private final long EXPIRATION_TIME = 86_400_000; //1 day
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -28,6 +28,8 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        //1 day
+        long EXPIRATION_TIME = 86_400_000;
         return Jwts.builder()
                 .claims(claims)
                 .subject(userDetails.getUsername())
@@ -66,11 +68,17 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parser()
-                .verifyWith(SECRET_KEY)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+        String username;
+        try {
+            username = Jwts.parser()
+                    .verifyWith(SECRET_KEY)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getSubject();
+        } catch (SignatureException | ExpiredJwtException e) {
+            username = null;
+        }
+        return username;
     }
 }

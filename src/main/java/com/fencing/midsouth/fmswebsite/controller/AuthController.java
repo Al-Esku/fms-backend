@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
@@ -55,9 +54,13 @@ public class AuthController {
         String token;
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             token = bearerToken.substring(7);
-            return ResponseEntity.ok(jwtService.extractUsername(token));
+            String username = jwtService.extractUsername(token);
+            if (username == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.ok(username);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(401).build();
     }
 
 
@@ -67,7 +70,7 @@ public class AuthController {
             logger.info("POST /api/auth/login");
             logger.info("Username: {}, Password: {}", loginDto.getUsername(), loginDto.getPassword());
 
-            Authentication authentication = authService.authenticate(
+            authService.authenticate(
                     loginDto.getUsername(), loginDto.getPassword());
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginDto.getUsername());

@@ -4,6 +4,8 @@ import com.fencing.midsouth.fmswebsite.model.entity.Event;
 import com.fencing.midsouth.fmswebsite.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -19,13 +21,13 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public List<Event> getPastEvents(String name) {
-        return eventRepository.findPastEvents(name);
+    public Page<Event> getPastEvents(String name, int pageNumber, int pageSize) {
+        return eventRepository.findPastEvents(name, PageRequest.of(pageNumber, pageSize));
     }
 
-    public Event addEvent(Event event) {
+    public void addEvent(Event event) {
         logger.info("Saving event to database");
-        return eventRepository.save(event);
+        eventRepository.save(event);
     }
 
     public List<Event> getEventsByMonth(int year, int month) {
@@ -74,7 +76,7 @@ public class EventService {
                 lastDate);
     }
 
-    public List<Event> getUpcomingEvents(String name) {
-        return eventRepository.findUpcomingEvents(name);
+    public Page<Event> getUpcomingEvents(String name, int pageNumber, int pageSize) {
+        return eventRepository.findUpcomingEvents(name, PageRequest.of(pageNumber, pageSize));
     }
 }

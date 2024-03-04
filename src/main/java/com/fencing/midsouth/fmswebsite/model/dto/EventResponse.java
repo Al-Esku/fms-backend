@@ -4,23 +4,27 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public class EventResponse {
-    private String name;
+    private final String name;
 
-    private UUID uuid;
+    private final UUID uuid;
 
-    private String creatorName;
+    private final String creatorName;
 
-    private String description;
+    private final String description;
 
-    private String type;
+    private final String type;
 
-    private boolean registrationRequired;
+    private final boolean registrationRequired;
 
-    private String registrationLink;
+    private final String registrationLink;
 
-    private ZonedDateTime startDate;
+    private final boolean results;
 
-    private ZonedDateTime endDate;
+    private final String resultsLink;
+
+    private final ZonedDateTime startDate;
+
+    private final ZonedDateTime endDate;
 
     public EventResponse(String name,
                          UUID uuid,
@@ -29,6 +33,8 @@ public class EventResponse {
                          String type,
                          boolean registrationRequired,
                          String registrationLink,
+                         boolean results,
+                         String resultsLink,
                          ZonedDateTime startDate,
                          ZonedDateTime endDate) {
         this.name = name;
@@ -38,6 +44,8 @@ public class EventResponse {
         this.type = type;
         this.registrationRequired = registrationRequired;
         this.registrationLink = registrationLink;
+        this.results = results;
+        this.resultsLink = resultsLink;
         this.startDate = startDate;
         this.endDate = endDate;
     }

@@ -1,6 +1,5 @@
 package com.fencing.midsouth.fmswebsite.model.dto;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public class EventForm {
@@ -14,6 +13,10 @@ public class EventForm {
     private boolean registrationRequired;
 
     private String registrationLink;
+
+    private boolean results;
+
+    private String resultsLink;
 
     private ZonedDateTime startDate;
 
@@ -37,6 +40,14 @@ public class EventForm {
 
     public String getRegistrationLink() {
         return registrationLink;
+    }
+
+    public boolean isResults() {
+        return results;
+    }
+
+    public String getResultsLink() {
+        return resultsLink;
     }
 
     public ZonedDateTime getStartDate() {

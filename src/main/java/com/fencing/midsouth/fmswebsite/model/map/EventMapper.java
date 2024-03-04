@@ -11,6 +11,8 @@ public class EventMapper {
                 form.getType(),
                 form.isRegistrationRequired(),
                 form.getRegistrationLink(),
+                form.isResults(),
+                form.getResultsLink(),
                 form.getStartDate(),
                 form.getEndDate());
     }
@@ -23,6 +25,8 @@ public class EventMapper {
                 event.getType(),
                 event.getRegistrationRequired(),
                 event.getRegistrationLink(),
+                event.isResults(),
+                event.getResultsLink(),
                 event.getStartDate(),
                 event.getEndDate());
     }

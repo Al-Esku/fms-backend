@@ -37,9 +37,6 @@ public class Event {
     private String registrationLink;
 
     @Column
-    private boolean results;
-
-    @Column
     private String resultsLink;
 
     @Column
@@ -53,7 +50,6 @@ public class Event {
                  String type,
                  boolean registrationRequired,
                  String registrationLink,
-                 boolean results,
                  String resultsLink,
                  ZonedDateTime startDate,
                  ZonedDateTime endDate) {
@@ -62,7 +58,6 @@ public class Event {
         this.type = type;
         this.registrationRequired = registrationRequired;
         this.registrationLink = registrationLink;
-        this.results = results;
         this.resultsLink = resultsLink;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -106,10 +101,6 @@ public class Event {
 
     public String getRegistrationLink() {
         return registrationLink;
-    }
-
-    public boolean isResults() {
-        return results;
     }
 
     public String getResultsLink() {

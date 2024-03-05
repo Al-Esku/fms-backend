@@ -14,8 +14,6 @@ public class EventForm {
 
     private String registrationLink;
 
-    private boolean results;
-
     private String resultsLink;
 
     private ZonedDateTime startDate;
@@ -40,10 +38,6 @@ public class EventForm {
 
     public String getRegistrationLink() {
         return registrationLink;
-    }
-
-    public boolean isResults() {
-        return results;
     }
 
     public String getResultsLink() {

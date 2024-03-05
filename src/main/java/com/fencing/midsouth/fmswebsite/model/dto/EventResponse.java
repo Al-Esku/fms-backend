@@ -18,8 +18,6 @@ public class EventResponse {
 
     private final String registrationLink;
 
-    private final boolean results;
-
     private final String resultsLink;
 
     private final ZonedDateTime startDate;
@@ -33,7 +31,6 @@ public class EventResponse {
                          String type,
                          boolean registrationRequired,
                          String registrationLink,
-                         boolean results,
                          String resultsLink,
                          ZonedDateTime startDate,
                          ZonedDateTime endDate) {
@@ -44,7 +41,6 @@ public class EventResponse {
         this.type = type;
         this.registrationRequired = registrationRequired;
         this.registrationLink = registrationLink;
-        this.results = results;
         this.resultsLink = resultsLink;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -76,6 +72,10 @@ public class EventResponse {
 
     public String getRegistrationLink() {
         return registrationLink;
+    }
+
+    public String getResultsLink() {
+        return resultsLink;
     }
 
     public ZonedDateTime getStartDate() {

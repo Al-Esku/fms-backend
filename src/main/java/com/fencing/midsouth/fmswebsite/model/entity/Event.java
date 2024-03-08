@@ -21,6 +21,11 @@ public class Event {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Location location;
+
     @Column(length = 100)
     private String name;
 
@@ -48,6 +53,7 @@ public class Event {
     public Event(String name,
                  String description,
                  String type,
+                 Location location,
                  boolean registrationRequired,
                  String registrationLink,
                  String resultsLink,
@@ -56,6 +62,7 @@ public class Event {
         this.name = name;
         this.description = description;
         this.type = type;
+        this.location = location;
         this.registrationRequired = registrationRequired;
         this.registrationLink = registrationLink;
         this.resultsLink = resultsLink;
@@ -121,5 +128,13 @@ public class Event {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

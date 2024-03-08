@@ -1,6 +1,8 @@
 package com.fencing.midsouth.fmswebsite.model.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class Club {
@@ -20,6 +22,11 @@ public class Club {
     @Column(length = 20)
     private String logoImage;
 
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Location location;
+
     public String getShortName() {
         return shortName;
     }
@@ -34,5 +41,9 @@ public class Club {
 
     public String getLogoImage() {
         return logoImage;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

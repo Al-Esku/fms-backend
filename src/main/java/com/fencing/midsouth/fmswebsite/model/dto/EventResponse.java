@@ -1,5 +1,7 @@
 package com.fencing.midsouth.fmswebsite.model.dto;
 
+import com.fencing.midsouth.fmswebsite.model.entity.Location;
+
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -24,6 +26,8 @@ public class EventResponse {
 
     private final ZonedDateTime endDate;
 
+    private final Location location;
+
     public EventResponse(String name,
                          UUID uuid,
                          String creatorName,
@@ -33,7 +37,8 @@ public class EventResponse {
                          String registrationLink,
                          String resultsLink,
                          ZonedDateTime startDate,
-                         ZonedDateTime endDate) {
+                         ZonedDateTime endDate,
+                         Location location) {
         this.name = name;
         this.uuid = uuid;
         this.creatorName = creatorName;
@@ -44,6 +49,7 @@ public class EventResponse {
         this.resultsLink = resultsLink;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.location = location;
     }
 
     public String getName() {
@@ -84,5 +90,9 @@ public class EventResponse {
 
     public ZonedDateTime getEndDate() {
         return endDate;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

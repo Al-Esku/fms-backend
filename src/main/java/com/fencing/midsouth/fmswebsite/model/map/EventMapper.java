@@ -9,6 +9,7 @@ public class EventMapper {
         return new Event(form.getName(),
                 form.getDescription(),
                 form.getType(),
+                form.getLocation(),
                 form.isRegistrationRequired(),
                 form.getRegistrationLink(),
                 form.getResultsLink(),
@@ -26,6 +27,7 @@ public class EventMapper {
                 event.getRegistrationLink(),
                 event.getResultsLink(),
                 event.getStartDate(),
-                event.getEndDate());
+                event.getEndDate(),
+                event.getLocation());
     }
 }

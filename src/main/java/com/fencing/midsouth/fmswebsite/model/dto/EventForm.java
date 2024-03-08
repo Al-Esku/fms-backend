@@ -1,5 +1,7 @@
 package com.fencing.midsouth.fmswebsite.model.dto;
 
+import com.fencing.midsouth.fmswebsite.model.entity.Location;
+
 import java.time.ZonedDateTime;
 
 public class EventForm {
@@ -19,6 +21,8 @@ public class EventForm {
     private ZonedDateTime startDate;
 
     private ZonedDateTime endDate;
+
+    private Location location;
 
     public String getName() {
         return name;
@@ -50,5 +54,9 @@ public class EventForm {
 
     public ZonedDateTime getEndDate() {
         return endDate;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

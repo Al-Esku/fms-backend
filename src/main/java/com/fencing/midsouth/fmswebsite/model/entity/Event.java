@@ -29,7 +29,7 @@ public class Event {
     @Column(length = 100)
     private String name;
 
-    @Column(length = 1000)
+    @Column(length = 50000)
     private String description;
 
     @Column

@@ -8,6 +8,7 @@ import com.fencing.midsouth.fmswebsite.model.entity.User;
 import com.fencing.midsouth.fmswebsite.model.map.EventMapper;
 import com.fencing.midsouth.fmswebsite.service.EventService;
 import com.fencing.midsouth.fmswebsite.service.JwtService;
+import com.fencing.midsouth.fmswebsite.service.LocationService;
 import com.fencing.midsouth.fmswebsite.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +34,13 @@ public class EventController {
 
     private final UserService userService;
 
-    public EventController(EventService eventService, JwtService jwtService, UserService userService) {
+    private final LocationService locationService;
+
+    public EventController(EventService eventService, JwtService jwtService, UserService userService, LocationService locationService) {
         this.eventService = eventService;
         this.jwtService = jwtService;
         this.userService = userService;
+        this.locationService = locationService;
     }
 
     @GetMapping("/past")
@@ -69,6 +73,9 @@ public class EventController {
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             if (user.isPresent()) {
                 event.setUser(user.get());
+                if (event.getLocation() != null) {
+                    locationService.saveLocation(event.getLocation());
+                }
                 eventService.addEvent(event);
                 return ResponseEntity.status(201).build();
             }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface EventRepository extends CrudRepository<Event, Long> {
@@ -22,4 +23,6 @@ public interface EventRepository extends CrudRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE e.endDate >= CURRENT_DATE AND LOWER(e.name) LIKE %:name%")
     Page<Event> findUpcomingEvents(@Param("name") String name, PageRequest pageRequest);
+
+    Event findEventByUuid(String uuid);
 }

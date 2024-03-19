@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/events")
@@ -61,6 +62,12 @@ public class EventController {
         Page<Event> events = eventService.getUpcomingEvents(name.toLowerCase(), offset, GenericConstants.DEFAULT_PAGE_SIZE);
         Page<EventResponse> responses = events.map(EventMapper::responseMap);
         return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<EventResponse> getEvent(@PathVariable String uuid) {
+        EventResponse eventResponse = EventMapper.responseMap(eventService.getEventFromUuid(uuid));
+        return new ResponseEntity<>(eventResponse, HttpStatus.OK);
     }
 
     @PostMapping("/create")

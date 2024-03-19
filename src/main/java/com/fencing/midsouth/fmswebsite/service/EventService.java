@@ -30,6 +30,10 @@ public class EventService {
         eventRepository.save(event);
     }
 
+    public Event getEventFromUuid(String uuid) {
+        return eventRepository.findEventByUuid(uuid);
+    }
+
     public List<Event> getEventsByMonth(int year, int month) {
         ZonedDateTime firstDate;
         if (month != 1) {

@@ -85,10 +85,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignUpDto signUpDto) {
-        if (userRepository.existsByEmail(signUpDto.getEmail())) {
-            return new ResponseEntity<>("Email is already taken", HttpStatus.BAD_REQUEST);
-        }
-
         if (userRepository.existsByUsername(signUpDto.getUsername())) {
             return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
         }
@@ -98,7 +94,7 @@ public class AuthController {
         user.setEmail(signUpDto.getEmail());
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
-        Role role = roleRepository.findByName("ROLE_ADMIN").get();
+        Role role = roleRepository.findByName("ROLE_CLUB").get();
         user.setRoles(Collections.singleton(role));
 
         userRepository.save(user);

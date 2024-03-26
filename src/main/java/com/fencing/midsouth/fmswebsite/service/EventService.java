@@ -21,8 +21,8 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public Page<Event> getPastEvents(String name, int pageNumber, int pageSize) {
-        return eventRepository.findPastEvents(name, PageRequest.of(pageNumber, pageSize));
+    public Page<Event> getPastEvents(String name, int pageNumber, int pageSize, String[] types, String[] creators) {
+        return eventRepository.findPastEvents(name, PageRequest.of(pageNumber, pageSize), types, creators);
     }
 
     public void addEvent(Event event) {
@@ -80,7 +80,19 @@ public class EventService {
                 lastDate);
     }
 
-    public Page<Event> getUpcomingEvents(String name, int pageNumber, int pageSize) {
-        return eventRepository.findUpcomingEvents(name, PageRequest.of(pageNumber, pageSize));
+    public Page<Event> getUpcomingEvents(String name, int pageNumber, int pageSize, String[] types, String[] creators) {
+        return eventRepository.findUpcomingEvents(name, PageRequest.of(pageNumber, pageSize), types, creators);
+    }
+
+    public Page<Event> getEventsBeforeDate(String name, int pageNumber, int pageSize, String[] types, String[] creators, ZonedDateTime date) {
+        return eventRepository.findEventsBeforeDate(name, PageRequest.of(pageNumber, pageSize), types, creators, date);
+    }
+
+    public Page<Event> getEventsAfterDate(String name, int pageNumber, int pageSize, String[] types, String[] creators, ZonedDateTime date) {
+        return eventRepository.findEventsAfterDate(name, PageRequest.of(pageNumber, pageSize), types, creators, date);
+    }
+
+    public Page<Event> getEventsBetweenDates(String name, int pageNumber, int pageSize, String[] types, String[] creators, ZonedDateTime before, ZonedDateTime after) {
+        return eventRepository.findEventsBetweenDates(name, PageRequest.of(pageNumber, pageSize), types, creators, before, after);
     }
 }

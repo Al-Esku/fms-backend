@@ -20,9 +20,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/events")
@@ -44,22 +44,30 @@ public class EventController {
         this.locationService = locationService;
     }
 
-    @GetMapping("/past")
-    public ResponseEntity<Page<EventResponse>> getPastEvents(
-            @RequestParam(name = "name", required = false, defaultValue = "") String name,
-            @RequestParam(name = "offset", defaultValue = "0") int offset) {
-        logger.info("GET /api/events/past");
-        Page<Event> events = eventService.getPastEvents(name.toLowerCase(), offset, GenericConstants.DEFAULT_PAGE_SIZE);
-        Page<EventResponse> responses = new PageImpl<>(events.stream().map(EventMapper::responseMap).toList());
-        return new ResponseEntity<>(responses, HttpStatus.OK);
-    }
-
-    @GetMapping("/upcoming")
+    @GetMapping("")
     public ResponseEntity<Page<EventResponse>> getUpcomingEvents(
+            @RequestParam(name = "upcoming", defaultValue = "true") boolean upcoming,
             @RequestParam(name = "name", required = false, defaultValue = "") String name,
-            @RequestParam(name = "offset", defaultValue = "0") int offset) {
-        logger.info("GET /api/events/upcoming");
-        Page<Event> events = eventService.getUpcomingEvents(name.toLowerCase(), offset, GenericConstants.DEFAULT_PAGE_SIZE);
+            @RequestParam(name = "offset", required = false, defaultValue = "0") int offset,
+            @RequestParam(name = "types", required = false) String[] types,
+            @RequestParam(name = "creators", required = false) String[] creators,
+            @RequestParam(name = "before", required = false) ZonedDateTime before,
+            @RequestParam(name = "after", required = false) ZonedDateTime after) {
+        logger.info("GET /api/events");
+        Page<Event> events;
+        if (before != null) {
+            if (after != null) {
+                events = eventService.getEventsBetweenDates(name.toLowerCase(), offset, GenericConstants.DEFAULT_PAGE_SIZE, types, creators, before.plusDays(1).minusNanos(1), after);
+            } else {
+                events = eventService.getEventsBeforeDate(name.toLowerCase(), offset, GenericConstants.DEFAULT_PAGE_SIZE, types, creators, before.plusDays(1).minusNanos(1));
+            }
+        } else if (after != null) {
+            events = eventService.getEventsAfterDate(name.toLowerCase(), offset, GenericConstants.DEFAULT_PAGE_SIZE, types, creators, after);
+        } else if (upcoming) {
+            events = eventService.getUpcomingEvents(name.toLowerCase(), offset, GenericConstants.DEFAULT_PAGE_SIZE, types, creators);
+        } else {
+            events = eventService.getPastEvents(name.toLowerCase(), offset, GenericConstants.DEFAULT_PAGE_SIZE, types, creators);
+        }
         Page<EventResponse> responses = events.map(EventMapper::responseMap);
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }

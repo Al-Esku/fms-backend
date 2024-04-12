@@ -27,6 +27,10 @@ public class Club {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Location location;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public String getShortName() {
         return shortName;
     }
@@ -45,5 +49,9 @@ public class Club {
 
     public Location getLocation() {
         return location;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

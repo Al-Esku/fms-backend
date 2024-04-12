@@ -18,11 +18,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static com.fencing.midsouth.fmswebsite.model.map.EventMapper.patch;
 
 @RestController
 @RequestMapping("/api/events")
@@ -80,7 +84,9 @@ public class EventController {
 
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> createEvent(@RequestBody EventForm eventForm, @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<?> createEvent(@Validated @RequestBody EventForm eventForm,
+                                         BindingResult bindingResult,
+                                         @RequestHeader("Authorization") String bearerToken) {
         logger.info("POST /api/events/create");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
@@ -90,6 +96,9 @@ public class EventController {
                 event.setUser(user.get());
                 if (event.getLocation() != null) {
                     locationService.saveLocation(event.getLocation());
+                }
+                if (bindingResult.hasErrors()) {
+                    return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
                 }
                 eventService.addEvent(event);
                 return ResponseEntity.status(201).build();
@@ -103,5 +112,37 @@ public class EventController {
                                                         @RequestParam(name = "month") int month) {
         List<Event> events = eventService.getEventsByMonth(year, month);
         return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<?> deleteEvent(@PathVariable String uuid) {
+        logger.info("DELETE /api/events/%s".formatted(uuid));
+        eventService.deleteEventByUuid(uuid);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{uuid}")
+    public ResponseEntity<?> editEvent(@PathVariable String uuid,
+                                       @Validated @RequestBody EventForm eventForm,
+                                       BindingResult bindingResult,
+                                       @RequestHeader("Authorization") String bearerToken) {
+        logger.info("PUT /api/events/%s".formatted(uuid));
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            Event event = eventService.getEventFromUuid(uuid);
+            Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
+            if (user.isPresent() && user.get() == event.getUser()) {
+                Event patchedEvent = patch(event, eventForm);
+                if (patchedEvent.getLocation() != null) {
+                    locationService.saveLocation(patchedEvent.getLocation());
+                }
+                if (bindingResult.hasErrors()) {
+                    return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
+                eventService.updateEvent(patchedEvent);
+                return ResponseEntity.status(201).build();
+            }
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

@@ -1,11 +1,15 @@
 package com.fencing.midsouth.fmswebsite.service;
 
+import com.fencing.midsouth.fmswebsite.model.entity.Club;
 import com.fencing.midsouth.fmswebsite.model.entity.Event;
 import com.fencing.midsouth.fmswebsite.repository.EventRepository;
+import jakarta.transaction.Transactional;
+import org.hibernate.ObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -80,6 +84,11 @@ public class EventService {
                 lastDate);
     }
 
+    public List<Event> getTop2UpcomingEventsByClub(Club club) {
+        Sort.Order sort = new Sort.Order(Sort.Direction.ASC, "startDate");
+        return eventRepository.findTop2ByStartDateAfterAndUser(ZonedDateTime.now(), club.getUser(), Sort.by(sort));
+    }
+
     public Page<Event> getUpcomingEvents(String name, int pageNumber, int pageSize, String[] types, String[] creators) {
         return eventRepository.findUpcomingEvents(name, PageRequest.of(pageNumber, pageSize), types, creators);
     }
@@ -94,5 +103,17 @@ public class EventService {
 
     public Page<Event> getEventsBetweenDates(String name, int pageNumber, int pageSize, String[] types, String[] creators, ZonedDateTime before, ZonedDateTime after) {
         return eventRepository.findEventsBetweenDates(name, PageRequest.of(pageNumber, pageSize), types, creators, before, after);
+    }
+
+    @Transactional
+    public void deleteEventByUuid(String uuid) {
+        eventRepository.deleteEventByUuid(uuid);
+    }
+
+    public Event updateEvent(Event event) throws ObjectNotFoundException {
+        if (eventRepository.existsByUuid(event.getUuid().toString())) {
+            return eventRepository.save(event);
+        }
+        throw new ObjectNotFoundException(event.getUuid(), event.getName());
     }
 }

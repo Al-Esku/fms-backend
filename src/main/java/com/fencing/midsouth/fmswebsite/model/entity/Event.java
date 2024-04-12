@@ -1,5 +1,6 @@
 package com.fencing.midsouth.fmswebsite.model.entity;
 
+import com.fencing.midsouth.fmswebsite.model.dto.EventForm;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -136,5 +137,29 @@ public class Event {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setRegistrationRequired(boolean registrationRequired) {
+        this.registrationRequired = registrationRequired;
+    }
+
+    public void setRegistrationLink(String registrationLink) {
+        this.registrationLink = registrationLink;
+    }
+
+    public void setResultsLink(String resultsLink) {
+        this.resultsLink = resultsLink;
+    }
+
+    public void setStartDate(ZonedDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(ZonedDateTime endDate) {
+        this.endDate = endDate;
     }
 }

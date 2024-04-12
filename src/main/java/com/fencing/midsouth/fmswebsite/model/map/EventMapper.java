@@ -4,8 +4,11 @@ import com.fencing.midsouth.fmswebsite.model.dto.EventForm;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
 import com.fencing.midsouth.fmswebsite.model.entity.Event;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
+
 public class EventMapper {
-    public static Event map(EventForm form) {
+    public static Event map(EventForm form) throws DateTimeParseException {
         return new Event(form.getName(),
                 form.getDescription(),
                 form.getType(),
@@ -13,8 +16,8 @@ public class EventMapper {
                 form.isRegistrationRequired(),
                 form.getRegistrationLink(),
                 form.getResultsLink(),
-                form.getStartDate(),
-                form.getEndDate());
+                ZonedDateTime.parse(form.getStartDate()),
+                ZonedDateTime.parse(form.getEndDate()));
     }
 
     public static EventResponse responseMap(Event event) {
@@ -31,7 +34,7 @@ public class EventMapper {
                 event.getLocation());
     }
 
-    public static Event patch(Event event, EventForm form) {
+    public static Event patch(Event event, EventForm form) throws DateTimeParseException {
         if (form.getName() != null && !form.getName().isBlank()) {
             event.setName(form.getName().trim());
         }
@@ -55,11 +58,11 @@ public class EventMapper {
         }
 
         if (form.getStartDate() != null) {
-            event.setStartDate(form.getStartDate());
+            event.setStartDate(ZonedDateTime.parse(form.getStartDate()));
         }
 
         if (form.getEndDate() != null) {
-            event.setEndDate(form.getEndDate());
+            event.setEndDate(ZonedDateTime.parse(form.getEndDate()));
         }
 
         event.setLocation(form.getLocation());

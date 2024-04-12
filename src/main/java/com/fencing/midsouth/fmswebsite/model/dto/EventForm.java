@@ -33,10 +33,9 @@ public class EventForm {
     private String resultsLink;
 
     @NotBlank(message = "Start Date is required")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private ZonedDateTime startDate;
+    private String startDate;
 
-    private ZonedDateTime endDate;
+    private String endDate;
 
     private Location location;
 
@@ -66,11 +65,11 @@ public class EventForm {
         return resultsLink;
     }
 
-    public ZonedDateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public ZonedDateTime getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 

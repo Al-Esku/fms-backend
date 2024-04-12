@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,15 +91,25 @@ public class EventController {
         logger.info("POST /api/events/create");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
-            Event event = EventMapper.map(eventForm);
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             if (user.isPresent()) {
-                event.setUser(user.get());
-                if (event.getLocation() != null) {
-                    locationService.saveLocation(event.getLocation());
+                try {
+                    ZonedDateTime.parse(eventForm.getStartDate());
+                } catch (DateTimeParseException | NullPointerException e) {
+                    bindingResult.rejectValue("startDate", "Invalid start date", "Invalid start date");
+                }
+                try {
+                    ZonedDateTime.parse(eventForm.getEndDate());
+                } catch (DateTimeParseException | NullPointerException e) {
+                    bindingResult.rejectValue("endDate", "Invalid end date", "Invalid end date");
                 }
                 if (bindingResult.hasErrors()) {
                     return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
+                Event event = EventMapper.map(eventForm);
+                event.setUser(user.get());
+                if (event.getLocation() != null) {
+                    locationService.saveLocation(event.getLocation());
                 }
                 eventService.addEvent(event);
                 return ResponseEntity.status(201).build();
@@ -132,12 +143,22 @@ public class EventController {
             Event event = eventService.getEventFromUuid(uuid);
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             if (user.isPresent() && user.get() == event.getUser()) {
-                Event patchedEvent = patch(event, eventForm);
-                if (patchedEvent.getLocation() != null) {
-                    locationService.saveLocation(patchedEvent.getLocation());
+                try {
+                    ZonedDateTime.parse(eventForm.getStartDate());
+                } catch (DateTimeParseException | NullPointerException e) {
+                    bindingResult.rejectValue("startDate", "Invalid start date", "Invalid start date");
+                }
+                try {
+                    ZonedDateTime.parse(eventForm.getEndDate());
+                } catch (DateTimeParseException | NullPointerException e) {
+                    bindingResult.rejectValue("endDate", "Invalid end date", "Invalid end date");
                 }
                 if (bindingResult.hasErrors()) {
                     return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
+                Event patchedEvent = patch(event, eventForm);
+                if (patchedEvent.getLocation() != null) {
+                    locationService.saveLocation(patchedEvent.getLocation());
                 }
                 eventService.updateEvent(patchedEvent);
                 return ResponseEntity.status(201).build();

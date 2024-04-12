@@ -4,6 +4,7 @@ import com.fencing.midsouth.fmswebsite.asset.Type;
 import com.fencing.midsouth.fmswebsite.model.entity.Location;
 import com.fencing.midsouth.fmswebsite.model.entity.User;
 
+import com.fencing.midsouth.fmswebsite.model.validation.Description;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+@Description(fieldName = "description")
 public class EventForm {
 
     @NotBlank(message = "Name is required")

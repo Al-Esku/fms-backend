@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -19,7 +20,8 @@ public class EventForm {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @Pattern(regexp = "(Competition)|(Training)|(Other)", message = "Invalid Type")
+    @Pattern(regexp = "(Competition)|(Training)|(Other)|(^$)", message = "Invalid Type")
+    @NotBlank(message = "Type is required")
     private String type;
 
     private String description;
@@ -30,6 +32,8 @@ public class EventForm {
 
     private String resultsLink;
 
+    @NotBlank(message = "Start Date is required")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private ZonedDateTime startDate;
 
     private ZonedDateTime endDate;

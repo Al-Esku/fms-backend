@@ -1,5 +1,6 @@
 package com.fencing.midsouth.fmswebsite.service;
 
+import com.fencing.midsouth.fmswebsite.model.entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Service
@@ -22,6 +24,12 @@ public class JwtService {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private BlacklistService blacklistService;
+
+    @Autowired
+    private UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
@@ -41,9 +49,11 @@ public class JwtService {
 
     public boolean validateToken(String token) {
         String username = extractUsername(token);
+        Optional<User> user = userService.getUserByUsername(username);
+        Date date = extractIssuedAt(token);
         logger.info("Validating token for {}", username);
 
-        return (userDetailsService.userExistsByUsername(username) && !isTokenExpired(token));
+        return (userDetailsService.userExistsByUsername(username) && !isTokenExpired(token) && !blacklistService.isBlacklisted(user.orElseThrow(), token, date));
     }
 
     public Authentication getAuthentication(String token) {
@@ -65,6 +75,15 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getExpiration();
+    }
+
+    private Date extractIssuedAt(String token) {
+        return Jwts.parser()
+                .verifyWith(SECRET_KEY)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getIssuedAt();
     }
 
     public String extractUsername(String token) {

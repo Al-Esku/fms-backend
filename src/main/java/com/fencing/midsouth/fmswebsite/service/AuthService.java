@@ -28,6 +28,10 @@ public class AuthService {
         return auth.isAuthenticated();
     }
 
+    public Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
 
     public Authentication authenticate(String username, String password) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);

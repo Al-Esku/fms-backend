@@ -8,8 +8,12 @@ import com.fencing.midsouth.fmswebsite.model.entity.User;
 import com.fencing.midsouth.fmswebsite.repository.RoleRepository;
 import com.fencing.midsouth.fmswebsite.repository.UserRepository;
 import com.fencing.midsouth.fmswebsite.service.AuthService;
+import com.fencing.midsouth.fmswebsite.service.BlacklistService;
 import com.fencing.midsouth.fmswebsite.service.CustomUserDetailsService;
 import com.fencing.midsouth.fmswebsite.service.JwtService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +23,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -48,6 +54,11 @@ public class AuthController {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private BlacklistService blacklistService;
+
+    private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("")
     public ResponseEntity<?> checkAuthenticated(@RequestHeader("Authorization") String bearerToken) {
@@ -68,7 +79,6 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
         try {
             logger.info("POST /api/auth/login");
-            logger.info("Username: {}, Password: {}", loginDto.getUsername(), loginDto.getPassword());
 
             authService.authenticate(
                     loginDto.getUsername(), loginDto.getPassword());
@@ -81,6 +91,22 @@ public class AuthController {
         } catch (BadCredentialsException badCredentialsException) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(@RequestHeader("Authorization") String bearerToken,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response) throws ServletException {
+        String token;
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            token = bearerToken.substring(7);
+            Optional<User> optionalUser = userRepository.findByUsername(jwtService.extractUsername(token));
+            optionalUser.ifPresent(user -> {
+                blacklistService.removeBlacklist(user);
+                blacklistService.addBlacklist(user);
+            });
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/signup")

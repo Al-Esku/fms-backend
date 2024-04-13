@@ -95,13 +95,17 @@ public class EventController {
             if (user.isPresent()) {
                 try {
                     ZonedDateTime.parse(eventForm.getStartDate());
-                } catch (DateTimeParseException | NullPointerException e) {
+                } catch (DateTimeParseException e) {
                     bindingResult.rejectValue("startDate", "Invalid start date", "Invalid start date");
+                } catch (NullPointerException e) {
+                    bindingResult.rejectValue("startDate", "Start date is required", "Start date is required");
                 }
                 try {
                     ZonedDateTime.parse(eventForm.getEndDate());
-                } catch (DateTimeParseException | NullPointerException e) {
+                } catch (DateTimeParseException e) {
                     bindingResult.rejectValue("endDate", "Invalid end date", "Invalid end date");
+                } catch (NullPointerException e) {
+                    bindingResult.rejectValue("endDate", "End date is required", "End date is required");
                 }
                 if (bindingResult.hasErrors()) {
                     return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);

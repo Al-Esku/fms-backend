@@ -32,7 +32,6 @@ public class EventForm {
 
     private String resultsLink;
 
-    @NotBlank(message = "Start Date is required")
     private String startDate;
 
     private String endDate;

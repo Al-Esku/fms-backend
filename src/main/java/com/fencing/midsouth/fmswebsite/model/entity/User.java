@@ -26,6 +26,9 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
+    @OneToOne(mappedBy = "user")
+    private Club club;
+
     public String getUsername() { return username; }
     public Set<Role> getRoles() {
         return roles;
@@ -37,6 +40,10 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Club getClub() {
+        return club;
     }
 
     public void setUsername(String username) {

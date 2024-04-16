@@ -1,16 +1,16 @@
 package com.fencing.midsouth.fmswebsite.controller;
 
 import com.fencing.midsouth.fmswebsite.model.dto.AuthenticationResponse;
+import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
 import com.fencing.midsouth.fmswebsite.model.dto.LoginDto;
 import com.fencing.midsouth.fmswebsite.model.dto.SignUpDto;
-import com.fencing.midsouth.fmswebsite.model.entity.Role;
-import com.fencing.midsouth.fmswebsite.model.entity.User;
+import com.fencing.midsouth.fmswebsite.model.entity.*;
+import com.fencing.midsouth.fmswebsite.model.map.ClubMapper;
+import com.fencing.midsouth.fmswebsite.model.map.EventMapper;
+import com.fencing.midsouth.fmswebsite.model.map.UserMapper;
 import com.fencing.midsouth.fmswebsite.repository.RoleRepository;
 import com.fencing.midsouth.fmswebsite.repository.UserRepository;
-import com.fencing.midsouth.fmswebsite.service.AuthService;
-import com.fencing.midsouth.fmswebsite.service.BlacklistService;
-import com.fencing.midsouth.fmswebsite.service.CustomUserDetailsService;
-import com.fencing.midsouth.fmswebsite.service.JwtService;
+import com.fencing.midsouth.fmswebsite.service.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -57,6 +58,15 @@ public class AuthController {
     @Autowired
     private BlacklistService blacklistService;
 
+    @Autowired
+    private SessionService sessionService;
+
+    @Autowired
+    private ContactService contactService;
+
+    @Autowired
+    private LinkService linkService;
+
     private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     @PreAuthorize("isAuthenticated()")
@@ -69,7 +79,19 @@ public class AuthController {
             if (username == null) {
                 return ResponseEntity.badRequest().build();
             }
-            return ResponseEntity.ok(username);
+            Optional<User> user = userRepository.findByUsername(username);
+            if (user.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            Club club = user.get().getClub();
+            if (club != null) {
+                List<Session> sessions = sessionService.getSessionByClub(club);
+                List<Contact> contacts = contactService.getContactsByClub(club);
+                List<EventResponse> events = List.of();
+                List<Link> links = linkService.getLinksByClub(club);
+                return ResponseEntity.ok(UserMapper.responseMap(user.get(), ClubMapper.map(club, sessions, contacts, events, links)));
+            }
+            return ResponseEntity.ok(UserMapper.responseMap(user.get(), null));
         }
         return ResponseEntity.status(401).build();
     }

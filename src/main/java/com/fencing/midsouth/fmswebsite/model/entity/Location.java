@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Location {
@@ -12,6 +13,7 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank
     private String name;
 
     private String addressLineOne;
@@ -20,8 +22,10 @@ public class Location {
 
     private String suburb;
 
+    @NotBlank
     private String city;
 
+    @NotBlank
     private String country;
 
     private String postcode;

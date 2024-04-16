@@ -1,18 +1,30 @@
 package com.fencing.midsouth.fmswebsite.model.map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fencing.midsouth.fmswebsite.model.dto.EventForm;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
 import com.fencing.midsouth.fmswebsite.model.entity.Event;
+import com.fencing.midsouth.fmswebsite.model.entity.Location;
+import com.google.gson.Gson;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
 public class EventMapper {
     public static Event map(EventForm form) throws DateTimeParseException {
+        Location location;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            location = objectMapper.readValue(form.getLocation(), Location.class);
+        } catch (JsonProcessingException e) {
+            location = null;
+        }
         return new Event(form.getName(),
                 form.getDescription(),
                 form.getType(),
-                form.getLocation(),
+                location,
                 form.isRegistrationRequired(),
                 form.getRegistrationLink(),
                 form.getResultsLink(),
@@ -64,8 +76,12 @@ public class EventMapper {
         if (form.getEndDate() != null) {
             event.setEndDate(ZonedDateTime.parse(form.getEndDate()));
         }
-
-        event.setLocation(form.getLocation());
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            event.setLocation(objectMapper.readValue(form.getLocation(), Location.class));
+        } catch (JsonProcessingException e) {
+            event.setLocation(null);
+        }
 
         return event;
     }

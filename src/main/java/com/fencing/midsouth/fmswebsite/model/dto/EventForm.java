@@ -5,6 +5,7 @@ import com.fencing.midsouth.fmswebsite.model.entity.Location;
 import com.fencing.midsouth.fmswebsite.model.entity.User;
 
 import com.fencing.midsouth.fmswebsite.model.validation.Description;
+import com.fencing.midsouth.fmswebsite.model.validation.EndDate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Description(fieldName = "description")
+@EndDate(fieldName = "endDate")
 public class EventForm {
 
     @NotBlank(message = "Name is required")
@@ -28,15 +30,17 @@ public class EventForm {
 
     private boolean registrationRequired;
 
+    @Pattern(regexp = "(((https?://(www\\.)?)|(www\\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*))|(^$)", message = "Invalid registration link")
     private String registrationLink;
 
+    @Pattern(regexp = "(((https?://(www\\.)?)|(www\\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*))|(^$)", message = "Invalid results link")
     private String resultsLink;
 
     private String startDate;
 
     private String endDate;
 
-    private Location location;
+    private String location;
 
     private Optional<User> optionalUser;
 
@@ -72,7 +76,7 @@ public class EventForm {
         return endDate;
     }
 
-    public Location getLocation() {
+    public String getLocation() {
         return location;
     }
 

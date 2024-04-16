@@ -1,15 +1,23 @@
 package com.fencing.midsouth.fmswebsite.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fencing.midsouth.fmswebsite.asset.GenericConstants;
 import com.fencing.midsouth.fmswebsite.model.dto.EventForm;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
 import com.fencing.midsouth.fmswebsite.model.entity.Event;
+import com.fencing.midsouth.fmswebsite.model.entity.Location;
 import com.fencing.midsouth.fmswebsite.model.entity.User;
 import com.fencing.midsouth.fmswebsite.model.map.EventMapper;
 import com.fencing.midsouth.fmswebsite.service.EventService;
 import com.fencing.midsouth.fmswebsite.service.JwtService;
 import com.fencing.midsouth.fmswebsite.service.LocationService;
 import com.fencing.midsouth.fmswebsite.service.UserService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -107,6 +115,14 @@ public class EventController {
                 } catch (NullPointerException e) {
                     bindingResult.rejectValue("endDate", "End date is required", "End date is required");
                 }
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.readValue(eventForm.getLocation(), Location.class);
+                } catch (JsonProcessingException e) {
+                    bindingResult.rejectValue("location", "Invalid location", "Invalid location");
+                } catch (IllegalArgumentException ignored) {
+
+                }
                 if (bindingResult.hasErrors()) {
                     return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
                 }
@@ -137,6 +153,7 @@ public class EventController {
     }
 
     @PutMapping("/{uuid}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> editEvent(@PathVariable String uuid,
                                        @Validated @RequestBody EventForm eventForm,
                                        BindingResult bindingResult,

@@ -16,7 +16,7 @@ public class Club {
     @Column(length = 100)
     private String longName;
 
-    @Column(length = 1000)
+    @Column(length = 50000)
     private String description;
 
     @Column(length = 20)
@@ -28,7 +28,7 @@ public class Club {
     private Location location;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     public String getShortName() {

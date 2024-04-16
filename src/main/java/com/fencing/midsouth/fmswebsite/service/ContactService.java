@@ -3,6 +3,7 @@ package com.fencing.midsouth.fmswebsite.service;
 import com.fencing.midsouth.fmswebsite.model.entity.Club;
 import com.fencing.midsouth.fmswebsite.model.entity.Contact;
 import com.fencing.midsouth.fmswebsite.repository.ContactRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,5 +19,10 @@ public class ContactService {
 
     public List<Contact> getContactsByClub(Club club) {
         return contactRepository.findContactsByClub(club);
+    }
+
+    @Transactional
+    public void deleteSessionByUuid(String uuid) {
+        contactRepository.deleteContactByUuid(uuid);
     }
 }

@@ -27,8 +27,8 @@ INSERT INTO club (short_name, long_name, description, logo_image, user_id, locat
 INSERT INTO sessions (uuid, name, description, start_time, end_time, club_id, week_day) VALUES ('41d86823-5fc7-4bb4-b31f-402858468d04', 'Open Social Bouting', 'Social bouting night, open for anyone to attend', '18:30:00', '20:30:00', 1, 0),
                                                                                          ('518b8ae8-11fc-43e6-a362-26710791fa40', 'Women''s Only Night', 'Social bouting for women', '18:30:00', '22:30:00', 1, 1);
 
-INSERT INTO contact (name, detail, club_id) VALUES ('Phone', '021 160 0140', 1),
-                                                    ('Email', 'alex.holton@yandex.com', 1);
+INSERT INTO contact (uuid, name, detail, club_id) VALUES ('ec646214-5e36-4f98-b0eb-86d373c3f468','Phone', '021 160 0140', 1),
+                                                    ('db80fa3a-55ae-40a8-b5ec-7693a37b593b', 'Email', 'alex.holton@yandex.com', 1);
 
 INSERT INTO roles (name) VALUES('ROLE_ADMIN'),
                                ('ROLE_CLUB');

@@ -5,6 +5,7 @@ import com.fencing.midsouth.fmswebsite.model.entity.Session;
 import com.fencing.midsouth.fmswebsite.model.entity.User;
 import com.fencing.midsouth.fmswebsite.repository.SessionRepository;
 import com.fencing.midsouth.fmswebsite.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,5 +24,10 @@ public class SessionService {
 
     public List<Session> getSessionByClub(Club club) {
         return sessionRepository.findSessionByClub(club);
+    }
+
+    @Transactional
+    public void deleteSessionByUuid(String uuid) {
+        sessionRepository.deleteSessionByUuid(uuid);
     }
 }

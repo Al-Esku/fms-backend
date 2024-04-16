@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface SessionRepository extends CrudRepository<Session, Long> {
     List<Session> findSessionByClub(Club club);
+
+    void deleteSessionByUuid(String uuid);
 }

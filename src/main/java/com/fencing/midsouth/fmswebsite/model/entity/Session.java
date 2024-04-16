@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.sql.Time;
+import java.util.UUID;
 
 @Entity
 @Table(name = "sessions")
@@ -33,6 +34,9 @@ public class Session {
     @JoinColumn(name = "club_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Club club;
+
+    @Column(unique = true, nullable = false, columnDefinition = "char(36)")
+    private String uuid = UUID.randomUUID().toString();
 
     public Session() {
     }
@@ -64,5 +68,9 @@ public class Session {
 
     public WeekDay getWeekDay() {
         return weekDay;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }

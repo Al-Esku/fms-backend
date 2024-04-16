@@ -2,6 +2,7 @@ package com.fencing.midsouth.fmswebsite.service;
 
 import com.fencing.midsouth.fmswebsite.model.entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
@@ -48,12 +49,16 @@ public class JwtService {
     }
 
     public boolean validateToken(String token) {
-        String username = extractUsername(token);
-        Optional<User> user = userService.getUserByUsername(username);
-        Date date = extractIssuedAt(token);
-        logger.info("Validating token for {}", username);
+        try {
+            String username = extractUsername(token);
+            Optional<User> user = userService.getUserByUsername(username);
+            Date date = extractIssuedAt(token);
+            logger.info("Validating token for {}", username);
 
-        return (userDetailsService.userExistsByUsername(username) && !isTokenExpired(token) && !blacklistService.isBlacklisted(user.orElseThrow(), token, date));
+            return (userDetailsService.userExistsByUsername(username) && !isTokenExpired(token) && !blacklistService.isBlacklisted(user.orElseThrow(), token, date));
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     public Authentication getAuthentication(String token) {
@@ -68,7 +73,7 @@ public class JwtService {
         return expirationDate.before(new Date());
     }
 
-    private Date extractExpiration(String token) {
+    private Date extractExpiration(String token) throws JwtException {
         return Jwts.parser()
                 .verifyWith(SECRET_KEY)
                 .build()

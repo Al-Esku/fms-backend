@@ -22,7 +22,7 @@ public class ContactController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteEvent(@PathVariable String uuid) {
+    public ResponseEntity<?> deleteContact(@PathVariable String uuid) {
         logger.info("DELETE /api/sessions/%s".formatted(uuid));
         contactService.deleteSessionByUuid(uuid);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -22,7 +22,7 @@ public class SessionController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<?> deleteEvent(@PathVariable String uuid) {
+    public ResponseEntity<?> deleteSession(@PathVariable String uuid) {
         logger.info("DELETE /api/sessions/%s".formatted(uuid));
         sessionService.deleteSessionByUuid(uuid);
         return new ResponseEntity<>(HttpStatus.OK);

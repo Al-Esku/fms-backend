@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface LinkRepository extends CrudRepository<Link, Long> {
     List<Link> findLinksByClub(Club club, Sort sort);
+
+    void deleteLinkByUuid(String uuid);
 }

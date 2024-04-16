@@ -40,7 +40,7 @@ INSERT INTO user_roles (role_id, user_id) VALUES (1, 1),
                                                  (2, 5),
                                                  (2, 6);
 
-INSERT INTO link (name, address, club_id) VALUES ('instagram', 'https://www.instagram.com/piwakawaka_fencing/', 1),
-                                                 ('facebook', 'https://www.facebook.com/PiwakawakaFencing', 1),
-                                                 ('website', 'https://www.piwakawakafencing.co.nz/home', 1);
+INSERT INTO link (name, address, club_id, uuid) VALUES ('instagram', 'https://www.instagram.com/piwakawaka_fencing', 1, 'c05f0000-bd29-43e8-b284-1f2087e1940a'),
+                                                 ('facebook', 'https://www.facebook.com/PiwakawakaFencing', 1, '52340391-a418-45b1-8132-5a4f2d0feac6'),
+                                                 ('website', 'https://www.piwakawakafencing.co.nz/home', 1, '2bf34121-9706-463c-bf9f-5dd3118c6497');
 

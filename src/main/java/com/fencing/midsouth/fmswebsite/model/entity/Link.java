@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.UUID;
+
 @Entity
 public class Link {
     @Id
@@ -18,6 +20,9 @@ public class Link {
     @JoinColumn(name = "club_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Club club;
+
+    @Column(unique = true, nullable = false, columnDefinition = "char(36)")
+    private String uuid = UUID.randomUUID().toString();
 
     public Link() {
     }
@@ -34,5 +39,9 @@ public class Link {
 
     public String getAddress() {
         return address;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }

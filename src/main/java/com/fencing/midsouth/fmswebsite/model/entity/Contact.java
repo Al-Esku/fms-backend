@@ -46,4 +46,12 @@ public class Contact {
     public String getUuid() {
         return uuid;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
 }

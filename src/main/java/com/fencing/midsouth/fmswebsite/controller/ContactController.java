@@ -59,4 +59,23 @@ public class ContactController {
         }
         return ResponseEntity.badRequest().build();
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{uuid}")
+    public ResponseEntity<?> editContact(@RequestBody ContactForm contactForm,
+                                         @RequestHeader("Authorization") String bearerToken,
+                                         @PathVariable String uuid) {
+        logger.info("PUT /api/contacts/%s".formatted(uuid));
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
+            Contact contact = contactService.getContactByUuid(uuid);
+            if (user.isPresent()) {
+                Contact patchedContact = ContactMapper.patch(contact, contactForm);
+                contactService.updateContact(patchedContact);
+                return ResponseEntity.status(201).build();
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

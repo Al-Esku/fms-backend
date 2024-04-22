@@ -12,4 +12,8 @@ public interface ContactRepository extends CrudRepository<Contact, Long> {
     List<Contact> findContactsByClub(Club club);
 
     void deleteContactByUuid(String uuid);
+
+    Contact findContactByUuid(String uuid);
+
+    boolean existsByUuid(String uuid);
 }

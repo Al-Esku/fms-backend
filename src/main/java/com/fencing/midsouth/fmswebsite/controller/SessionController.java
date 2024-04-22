@@ -63,4 +63,23 @@ public class SessionController {
         }
         return ResponseEntity.badRequest().build();
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{uuid}")
+    public ResponseEntity<?> editSession(@RequestBody SessionForm sessionForm,
+                                         @RequestHeader("Authorization") String bearerToken,
+                                         @PathVariable String uuid) {
+        logger.info("POST /api/sessions/create");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
+            Session session = sessionService.getSessionByUuid(uuid);
+            if (user.isPresent()) {
+                Session patchedSession = SessionMapper.patch(session, sessionForm);
+                sessionService.updateSession(patchedSession);
+                return ResponseEntity.status(201).build();
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

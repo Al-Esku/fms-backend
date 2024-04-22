@@ -7,11 +7,13 @@ import com.fencing.midsouth.fmswebsite.model.entity.User;
 import com.fencing.midsouth.fmswebsite.repository.SessionRepository;
 import com.fencing.midsouth.fmswebsite.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.hibernate.ObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SessionService {
@@ -38,8 +40,20 @@ public class SessionService {
         sessionRepository.deleteSessionByUuid(uuid);
     }
 
+    public Session getSessionByUuid(String uuid) {
+        logger.info("Finding session %s from database".formatted(uuid));
+        return sessionRepository.findSessionByUuid(uuid);
+    }
+
     public void addSession(Session session) {
         logger.info("Saving session to database");
         sessionRepository.save(session);
+    }
+
+    public Session updateSession(Session session) throws ObjectNotFoundException {
+        if (sessionRepository.existsByUuid(session.getUuid())) {
+            return sessionRepository.save(session);
+        }
+        throw new ObjectNotFoundException(UUID.fromString(session.getUuid()), session.getName());
     }
 }

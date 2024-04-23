@@ -23,6 +23,7 @@ public class ClubMapper {
                 sessions,
                 contacts,
                 events,
-                links);
+                links,
+                club.getUuid());
     }
 }

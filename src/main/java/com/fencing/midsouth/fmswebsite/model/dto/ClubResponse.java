@@ -23,7 +23,9 @@ public class ClubResponse {
 
     private final List<Link> links;
 
-    public ClubResponse(String shortName, String longName, String description, String logoImage, Location location, List<Session> sessions, List<Contact> contacts, List<EventResponse> events, List<Link> links) {
+    private final String uuid;
+
+    public ClubResponse(String shortName, String longName, String description, String logoImage, Location location, List<Session> sessions, List<Contact> contacts, List<EventResponse> events, List<Link> links, String uuid) {
         this.shortName = shortName;
         this.longName = longName;
         this.description = description;
@@ -33,6 +35,7 @@ public class ClubResponse {
         this.contacts = contacts;
         this.events = events;
         this.links = links;
+        this.uuid = uuid;
     }
 
     public String getShortName() {
@@ -69,5 +72,9 @@ public class ClubResponse {
 
     public List<Link> getLinks() {
         return links;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }

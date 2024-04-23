@@ -4,11 +4,16 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.UUID;
+
 @Entity
 public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false, columnDefinition = "char(36)")
+    private String uuid = UUID.randomUUID().toString();
 
     @Column(length = 20)
     private String shortName;
@@ -53,5 +58,9 @@ public class Club {
 
     public User getUser() {
         return user;
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }

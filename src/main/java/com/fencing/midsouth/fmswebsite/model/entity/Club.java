@@ -63,4 +63,12 @@ public class Club {
     public String getUuid() {
         return uuid;
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

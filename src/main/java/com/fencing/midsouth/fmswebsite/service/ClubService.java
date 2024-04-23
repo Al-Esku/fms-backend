@@ -17,4 +17,14 @@ public class ClubService {
     public Optional<Club> getClubByName(String name) {
         return clubRepository.findClubByShortName(name);
     }
+
+    public Optional<Club> getClubByUuid(String uuid) {
+        return clubRepository.findClubByUuid(uuid);
+    }
+
+    public void updateClub(Club club) {
+        if (clubRepository.existsByUuid(club.getUuid())) {
+            clubRepository.save(club);
+        }
+    }
 }

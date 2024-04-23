@@ -1,5 +1,6 @@
 package com.fencing.midsouth.fmswebsite.controller;
 
+import com.fencing.midsouth.fmswebsite.model.dto.ClubForm;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubResponse;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
 import com.fencing.midsouth.fmswebsite.model.entity.Club;
@@ -12,6 +13,7 @@ import com.fencing.midsouth.fmswebsite.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,6 +51,21 @@ public class ClubController {
             List<EventResponse> events = eventService.getTop2UpcomingEventsByClub(club.get()).stream().map(EventMapper::responseMap).toList();
             List<Link> links = linkService.getLinksByClub(club.get());
             return ResponseEntity.ok(ClubMapper.map(club.get(), sessions, contacts, events, links));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/{uuid}")
+    public ResponseEntity<?> updateClub(@PathVariable String uuid,
+                                        @RequestBody ClubForm clubForm) {
+        logger.info("GET /api/clubs/{}", uuid);
+        Optional<Club> club = clubService.getClubByUuid(uuid);
+        if (club.isPresent()) {
+            Club patchedClub = ClubMapper.patch(club.get(), clubForm);
+            clubService.updateClub(patchedClub);
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }

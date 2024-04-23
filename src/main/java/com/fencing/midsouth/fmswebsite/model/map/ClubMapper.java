@@ -1,5 +1,6 @@
 package com.fencing.midsouth.fmswebsite.model.map;
 
+import com.fencing.midsouth.fmswebsite.model.dto.ClubForm;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubResponse;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
 import com.fencing.midsouth.fmswebsite.model.entity.Club;
@@ -25,5 +26,13 @@ public class ClubMapper {
                 events,
                 links,
                 club.getUuid());
+    }
+
+    public static Club patch(Club club, ClubForm clubForm) {
+        if (clubForm.getDescription() != null && !clubForm.getDescription().isBlank()) {
+            club.setDescription(clubForm.getDescription());
+        }
+
+        return club;
     }
 }

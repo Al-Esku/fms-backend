@@ -9,4 +9,8 @@ import java.util.Optional;
 @Repository
 public interface ClubRepository extends CrudRepository<Club, Long> {
     Optional<Club> findClubByShortName(String name);
+
+    Optional<Club> findClubByUuid(String uuid);
+
+    boolean existsByUuid(String uuid);
 }

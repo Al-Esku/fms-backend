@@ -1,12 +1,11 @@
 package com.fencing.midsouth.fmswebsite.model.map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubForm;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubResponse;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
-import com.fencing.midsouth.fmswebsite.model.entity.Club;
-import com.fencing.midsouth.fmswebsite.model.entity.Contact;
-import com.fencing.midsouth.fmswebsite.model.entity.Link;
-import com.fencing.midsouth.fmswebsite.model.entity.Session;
+import com.fencing.midsouth.fmswebsite.model.entity.*;
 
 import java.util.List;
 
@@ -31,6 +30,12 @@ public class ClubMapper {
     public static Club patch(Club club, ClubForm clubForm) {
         if (clubForm.getDescription() != null && !clubForm.getDescription().isBlank()) {
             club.setDescription(clubForm.getDescription());
+        }
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            club.setLocation(objectMapper.readValue(clubForm.getLocation(), Location.class));
+        } catch (JsonProcessingException e) {
+            club.setLocation(null);
         }
 
         return club;

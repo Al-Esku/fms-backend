@@ -12,6 +12,7 @@ import com.fencing.midsouth.fmswebsite.model.map.EventMapper;
 import com.fencing.midsouth.fmswebsite.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,9 @@ public class ClubController {
     private final EventService eventService;
 
     private final LinkService linkService;
+
+    @Autowired
+    private LocationService locationService;
 
     public ClubController(ClubService clubService, SessionService sessionService, ContactService contactService, EventService eventService, LinkService linkService) {
         this.clubService = clubService;
@@ -64,6 +68,9 @@ public class ClubController {
         Optional<Club> club = clubService.getClubByUuid(uuid);
         if (club.isPresent()) {
             Club patchedClub = ClubMapper.patch(club.get(), clubForm);
+            if (patchedClub.getLocation() != null) {
+                locationService.saveLocation(patchedClub.getLocation());
+            }
             clubService.updateClub(patchedClub);
             return ResponseEntity.ok().build();
         } else {

@@ -36,7 +36,7 @@ public class ContactService {
     }
 
     public void addContact(Contact contact) {
-        logger.info("Saving event to database");
+        logger.info("Saving contact to database");
         contactRepository.save(contact);
     }
 

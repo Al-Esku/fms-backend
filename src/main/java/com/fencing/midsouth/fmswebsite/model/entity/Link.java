@@ -44,4 +44,12 @@ public class Link {
     public String getUuid() {
         return uuid;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }

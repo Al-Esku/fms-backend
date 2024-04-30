@@ -59,4 +59,23 @@ public class LinkController {
         }
         return ResponseEntity.badRequest().build();
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{uuid}")
+    public ResponseEntity<?> editContact(@RequestBody LinkForm linkForm,
+                                         @RequestHeader("Authorization") String bearerToken,
+                                         @PathVariable String uuid) {
+        logger.info("PUT /api/contacts/%s".formatted(uuid));
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
+            Link link = linkService.getLinkByUuid(uuid);
+            if (user.isPresent()) {
+                Link patchedLink = LinkMapper.patch(link, linkForm);
+                linkService.updateLink(patchedLink);
+                return ResponseEntity.status(201).build();
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
 }

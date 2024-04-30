@@ -12,5 +12,9 @@ import java.util.List;
 public interface LinkRepository extends CrudRepository<Link, Long> {
     List<Link> findLinksByClub(Club club, Sort sort);
 
+    Link findLinkByUuid(String uuid);
+
+    boolean existsByUuid(String uuid);
+
     void deleteLinkByUuid(String uuid);
 }

@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -45,13 +47,17 @@ public class ContactController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public ResponseEntity<?> createContact(@RequestBody ContactForm contactForm,
+    public ResponseEntity<?> createContact(@Validated @RequestBody ContactForm contactForm,
+                                           BindingResult bindingResult,
                                            @RequestHeader("Authorization") String bearerToken) {
         logger.info("POST /api/contacts/create");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             if (user.isPresent()) {
+                if (bindingResult.hasErrors()) {
+                    return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
                 Contact contact = ContactMapper.map(contactForm, user.get().getClub());
                 contactService.addContact(contact);
                 return ResponseEntity.status(201).build();
@@ -62,7 +68,8 @@ public class ContactController {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{uuid}")
-    public ResponseEntity<?> editContact(@RequestBody ContactForm contactForm,
+    public ResponseEntity<?> editContact(@Validated @RequestBody ContactForm contactForm,
+                                         BindingResult bindingResult,
                                          @RequestHeader("Authorization") String bearerToken,
                                          @PathVariable String uuid) {
         logger.info("PUT /api/contacts/%s".formatted(uuid));
@@ -71,6 +78,9 @@ public class ContactController {
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             Contact contact = contactService.getContactByUuid(uuid);
             if (user.isPresent()) {
+                if (bindingResult.hasErrors()) {
+                    return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
                 Contact patchedContact = ContactMapper.patch(contact, contactForm);
                 contactService.updateContact(patchedContact);
                 return ResponseEntity.status(201).build();

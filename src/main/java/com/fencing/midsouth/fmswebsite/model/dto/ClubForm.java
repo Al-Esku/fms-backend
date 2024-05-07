@@ -1,6 +1,9 @@
 package com.fencing.midsouth.fmswebsite.model.dto;
 
-public class ClubForm {
+import com.fencing.midsouth.fmswebsite.model.validation.Description;
+
+@Description(fieldName = "description")
+public class ClubForm extends DescriptionForm {
 
     private String description;
 

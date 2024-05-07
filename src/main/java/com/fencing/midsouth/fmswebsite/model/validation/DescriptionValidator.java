@@ -1,5 +1,6 @@
 package com.fencing.midsouth.fmswebsite.model.validation;
 
+import com.fencing.midsouth.fmswebsite.model.dto.DescriptionForm;
 import com.fencing.midsouth.fmswebsite.model.dto.EventForm;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -10,7 +11,7 @@ import com.fencing.midsouth.fmswebsite.model.validation.ValidationUtils;
 import java.util.Objects;
 import java.util.Set;
 
-public class DescriptionValidator implements ConstraintValidator<Description, EventForm> {
+public class DescriptionValidator implements ConstraintValidator<Description, DescriptionForm> {
 
     private String fieldName;
 
@@ -27,15 +28,15 @@ public class DescriptionValidator implements ConstraintValidator<Description, Ev
     }
 
     @Override
-    public boolean isValid(EventForm eventForm, ConstraintValidatorContext context) {
-        if (!isLexicalJson(eventForm.getDescription())) {
+    public boolean isValid(DescriptionForm descriptionForm, ConstraintValidatorContext context) {
+        if (!isLexicalJson(descriptionForm.getDescription())) {
             ValidationUtils.configureContext(context,
                     message,
                     fieldName);
             return false;
         }
 
-        if (isEmptyJson(eventForm.getDescription())) {
+        if (isEmptyJson(descriptionForm.getDescription())) {
             ValidationUtils.configureContext(context,
                     blankMessage,
                     fieldName);

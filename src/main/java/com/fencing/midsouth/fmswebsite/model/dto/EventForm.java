@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Description(fieldName = "description")
 @EndDate(fieldName = "endDate")
-public class EventForm {
+public class EventForm extends DescriptionForm {
 
     @NotBlank(message = "Name is required")
     private String name;

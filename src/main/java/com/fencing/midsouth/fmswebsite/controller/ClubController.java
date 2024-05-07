@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,7 +65,7 @@ public class ClubController {
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateClub(@PathVariable String uuid,
-                                        @RequestBody ClubForm clubForm,
+                                        @Validated @RequestBody ClubForm clubForm,
                                         BindingResult bindingResult) {
         logger.info("GET /api/clubs/{}", uuid);
         Optional<Club> club = clubService.getClubByUuid(uuid);

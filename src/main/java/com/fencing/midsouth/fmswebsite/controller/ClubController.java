@@ -1,20 +1,21 @@
 package com.fencing.midsouth.fmswebsite.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubForm;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubResponse;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
-import com.fencing.midsouth.fmswebsite.model.entity.Club;
-import com.fencing.midsouth.fmswebsite.model.entity.Contact;
-import com.fencing.midsouth.fmswebsite.model.entity.Link;
-import com.fencing.midsouth.fmswebsite.model.entity.Session;
+import com.fencing.midsouth.fmswebsite.model.entity.*;
 import com.fencing.midsouth.fmswebsite.model.map.ClubMapper;
 import com.fencing.midsouth.fmswebsite.model.map.EventMapper;
 import com.fencing.midsouth.fmswebsite.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,10 +64,22 @@ public class ClubController {
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/{uuid}")
     public ResponseEntity<?> updateClub(@PathVariable String uuid,
-                                        @RequestBody ClubForm clubForm) {
+                                        @RequestBody ClubForm clubForm,
+                                        BindingResult bindingResult) {
         logger.info("GET /api/clubs/{}", uuid);
         Optional<Club> club = clubService.getClubByUuid(uuid);
         if (club.isPresent()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.readValue(clubForm.getLocation(), Location.class);
+            } catch (JsonProcessingException e) {
+                bindingResult.rejectValue("location", "Invalid location", "Invalid location");
+            } catch (IllegalArgumentException ignored) {
+
+            }
+            if (bindingResult.hasErrors()) {
+                return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+            }
             Club patchedClub = ClubMapper.patch(club.get(), clubForm);
             if (patchedClub.getLocation() != null) {
                 locationService.saveLocation(patchedClub.getLocation());

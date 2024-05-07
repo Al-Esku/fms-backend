@@ -3,13 +3,13 @@ package com.fencing.midsouth.fmswebsite.model.dto;
 public class ContactForm {
     private String name;
 
-    private String detail;
+    private String info;
 
     public String getName() {
         return name;
     }
 
-    public String getDetail() {
-        return detail;
+    public String getInfo() {
+        return info;
     }
 }

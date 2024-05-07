@@ -16,7 +16,7 @@ public class Contact {
     private String name;
 
     @Column
-    private String detail;
+    private String info;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
@@ -29,9 +29,9 @@ public class Contact {
     public Contact() {
     }
 
-    public Contact(String name, String detail, Club club) {
+    public Contact(String name, String info, Club club) {
         this.name = name;
-        this.detail = detail;
+        this.info = info;
         this.club = club;
     }
 
@@ -39,8 +39,8 @@ public class Contact {
         return name;
     }
 
-    public String getDetail() {
-        return detail;
+    public String getInfo() {
+        return info;
     }
 
     public String getUuid() {
@@ -51,7 +51,7 @@ public class Contact {
         this.name = name;
     }
 
-    public void setDetail(String detail) {
-        this.detail = detail;
+    public void setInfo(String detail) {
+        this.info = detail;
     }
 }

@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -45,13 +47,17 @@ public class LinkController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public ResponseEntity<?> createLink(@RequestBody LinkForm linkForm,
+    public ResponseEntity<?> createLink(@Validated @RequestBody LinkForm linkForm,
+                                        BindingResult bindingResult,
                                         @RequestHeader("Authorization") String bearerToken) {
         logger.info("POST /api/links/create");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             if (user.isPresent()) {
+                if (bindingResult.hasErrors()) {
+                    return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
                 Link link = LinkMapper.map(linkForm, user.get().getClub());
                 linkService.addLink(link);
                 return ResponseEntity.status(201).build();
@@ -62,15 +68,19 @@ public class LinkController {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{uuid}")
-    public ResponseEntity<?> editContact(@RequestBody LinkForm linkForm,
+    public ResponseEntity<?> editContact(@Validated @RequestBody LinkForm linkForm,
+                                         BindingResult bindingResult,
                                          @RequestHeader("Authorization") String bearerToken,
                                          @PathVariable String uuid) {
-        logger.info("PUT /api/contacts/%s".formatted(uuid));
+        logger.info("PUT /api/links/%s".formatted(uuid));
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             Link link = linkService.getLinkByUuid(uuid);
             if (user.isPresent()) {
+                if (bindingResult.hasErrors()) {
+                    return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
                 Link patchedLink = LinkMapper.patch(link, linkForm);
                 linkService.updateLink(patchedLink);
                 return ResponseEntity.status(201).build();

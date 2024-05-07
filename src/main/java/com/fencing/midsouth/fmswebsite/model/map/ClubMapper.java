@@ -31,13 +31,14 @@ public class ClubMapper {
         if (clubForm.getDescription() != null && !clubForm.getDescription().isBlank()) {
             club.setDescription(clubForm.getDescription());
         }
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            club.setLocation(objectMapper.readValue(clubForm.getLocation(), Location.class));
-        } catch (JsonProcessingException e) {
-            club.setLocation(null);
+        if (clubForm.getLocation() != null && !clubForm.getLocation().isBlank()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                club.setLocation(objectMapper.readValue(clubForm.getLocation(), Location.class));
+            } catch (JsonProcessingException | IllegalArgumentException e) {
+                club.setLocation(null);
+            }
         }
-
         return club;
     }
 }

@@ -19,8 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
@@ -49,13 +52,27 @@ public class SessionController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public ResponseEntity<?> createSession(@RequestBody SessionForm sessionForm,
+    public ResponseEntity<?> createSession(@Validated @RequestBody SessionForm sessionForm,
+                                           BindingResult bindingResult,
                                            @RequestHeader("Authorization") String bearerToken) {
         logger.info("POST /api/sessions/create");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             if (user.isPresent()) {
+                try {
+                    Time.valueOf(sessionForm.getStartTime());
+                } catch (IllegalArgumentException e) {
+                    bindingResult.rejectValue("startTime", "Invalid start time", "Invalid start time");
+                }
+                try {
+                    Time.valueOf(sessionForm.getEndTime());
+                } catch (IllegalArgumentException e) {
+                    bindingResult.rejectValue("endTime", "Invalid end time", "Invalid end time");
+                }
+                if (bindingResult.hasErrors()) {
+                    return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
                 Session session = SessionMapper.map(sessionForm, user.get().getClub());
                 sessionService.addSession(session);
                 return ResponseEntity.status(201).build();
@@ -66,7 +83,8 @@ public class SessionController {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/{uuid}")
-    public ResponseEntity<?> editSession(@RequestBody SessionForm sessionForm,
+    public ResponseEntity<?> editSession(@Validated @RequestBody SessionForm sessionForm,
+                                         BindingResult bindingResult,
                                          @RequestHeader("Authorization") String bearerToken,
                                          @PathVariable String uuid) {
         logger.info("POST /api/sessions/create");
@@ -75,6 +93,19 @@ public class SessionController {
             Optional<User> user = userService.getUserByUsername(jwtService.extractUsername(token));
             Session session = sessionService.getSessionByUuid(uuid);
             if (user.isPresent()) {
+                try {
+                    Time.valueOf(sessionForm.getStartTime());
+                } catch (IllegalArgumentException e) {
+                    bindingResult.rejectValue("startTime", "Invalid start time", "Invalid start time");
+                }
+                try {
+                    Time.valueOf(sessionForm.getEndTime());
+                } catch (IllegalArgumentException e) {
+                    bindingResult.rejectValue("endTime", "Invalid end time", "Invalid end time");
+                }
+                if (bindingResult.hasErrors()) {
+                    return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+                }
                 Session patchedSession = SessionMapper.patch(session, sessionForm);
                 sessionService.updateSession(patchedSession);
                 return ResponseEntity.status(201).build();

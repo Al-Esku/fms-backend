@@ -28,7 +28,7 @@ public class Session {
     private Time endTime;
 
     @Column
-    private WeekDay weekDay;
+    private String weekDay;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
@@ -41,7 +41,7 @@ public class Session {
     public Session() {
     }
 
-    public Session(String name, String description, Time startTime, Time endTime, Club club, WeekDay day) {
+    public Session(String name, String description, Time startTime, Time endTime, Club club, String day) {
         this.name = name;
         this.description = description;
         this.startTime = startTime;
@@ -66,7 +66,7 @@ public class Session {
         return endTime;
     }
 
-    public WeekDay getWeekDay() {
+    public String getWeekDay() {
         return weekDay;
     }
 
@@ -90,7 +90,7 @@ public class Session {
         this.endTime = endTime;
     }
 
-    public void setWeekDay(WeekDay weekDay) {
+    public void setWeekDay(String weekDay) {
         this.weekDay = weekDay;
     }
 

@@ -18,7 +18,7 @@ public class EventMapper {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             location = objectMapper.readValue(form.getLocation(), Location.class);
-        } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException | IllegalArgumentException e) {
             location = null;
         }
         return new Event(form.getName(),

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubForm;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubResponse;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
+import com.fencing.midsouth.fmswebsite.model.dto.HomeClubResponse;
 import com.fencing.midsouth.fmswebsite.model.entity.*;
 
 import java.util.List;
@@ -40,5 +41,9 @@ public class ClubMapper {
             }
         }
         return club;
+    }
+
+    public static HomeClubResponse homeMap(Club club) {
+        return new HomeClubResponse(club.getShortName(), club.getLongName(), club.getLogoImage());
     }
 }

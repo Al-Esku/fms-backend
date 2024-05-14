@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubForm;
 import com.fencing.midsouth.fmswebsite.model.dto.ClubResponse;
 import com.fencing.midsouth.fmswebsite.model.dto.EventResponse;
+import com.fencing.midsouth.fmswebsite.model.dto.HomeClubResponse;
 import com.fencing.midsouth.fmswebsite.model.entity.*;
 import com.fencing.midsouth.fmswebsite.model.map.ClubMapper;
 import com.fencing.midsouth.fmswebsite.model.map.EventMapper;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/clubs")
@@ -60,6 +62,13 @@ public class ClubController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<HomeClubResponse>> getClubs() {
+        logger.info("GET /api/clubs");
+        List<Club> clubs = clubService.getClubs();
+        return ResponseEntity.ok(clubs.stream().map(ClubMapper::homeMap).collect(Collectors.toList()));
     }
 
     @PreAuthorize("isAuthenticated()")

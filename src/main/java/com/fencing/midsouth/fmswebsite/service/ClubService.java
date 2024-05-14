@@ -4,7 +4,10 @@ import com.fencing.midsouth.fmswebsite.model.entity.Club;
 import com.fencing.midsouth.fmswebsite.repository.ClubRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ClubService {
@@ -26,5 +29,10 @@ public class ClubService {
         if (clubRepository.existsByUuid(club.getUuid())) {
             clubRepository.save(club);
         }
+    }
+
+    public List<Club> getClubs() {
+        return StreamSupport.stream(clubRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 }

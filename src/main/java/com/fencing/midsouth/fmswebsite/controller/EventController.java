@@ -34,6 +34,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.fencing.midsouth.fmswebsite.model.map.EventMapper.patch;
 
@@ -138,11 +139,11 @@ public class EventController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/month")
-    public ResponseEntity<List<Event>> getEventsByDates(@RequestParam(name = "year") int year,
+    @GetMapping("/calendar")
+    public ResponseEntity<List<EventResponse>> getEventsByDates(@RequestParam(name = "year") int year,
                                                         @RequestParam(name = "month") int month) {
         List<Event> events = eventService.getEventsByMonth(year, month);
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        return new ResponseEntity<>(events.stream().map(EventMapper::responseMap).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")

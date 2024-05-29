@@ -21,5 +21,4 @@ artifacts:
     build/libs/*.jar
     scripts/*.sh
     appspec.yml
-    .env
   discard-paths: yes

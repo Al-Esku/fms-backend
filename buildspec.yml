@@ -1,0 +1,25 @@
+version: 0.2
+
+env:
+  parameter-store:
+    DB_URL: "PRODDBURL"
+    DB_USERNAME: "PRODDBUSERNAME"
+    DB_PASSWORD: "PRODDBPASSWORD"
+    MAPBOX_KEY: "MAPBOXKEY"
+
+phases:
+  build:
+    commands:
+      - ./gradlew bootJar
+      - echo "DB_URL=${DB_URL}">.env
+      - echo "DB_USERNAME=${DB_USERNAME}">>.env
+      - echo "DB_PASSWORD=${DB_PASSWORD}">>.env
+      - echo "MAPBOX_KEY=${MAPBOX_KEY}">>.env
+
+artifacts:
+  files:
+    build/libs/*.jar
+    scripts/*.sh
+    appspec.yml
+    .env
+  discard-paths: yes

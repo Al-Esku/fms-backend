@@ -18,6 +18,6 @@ phases:
 
 artifacts:
   files:
-    scripts/*.sh
-    appspec.yml
+    /codebuild/output/src2294726856/src/github.com/Al-Esku/fms-backend/scripts/*.sh
+    /codebuild/output/src2294726856/src/github.com/Al-Esku/fms-backend/appspec.yml
   discard-paths: yes

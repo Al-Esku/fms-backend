@@ -18,6 +18,8 @@ phases:
 
 artifacts:
   files:
-    /codebuild/output/src2294726856/src/github.com/Al-Esku/fms-backend/scripts/*.sh
-    /codebuild/output/src2294726856/src/github.com/Al-Esku/fms-backend/appspec.yml
+    - build/libs/*.jar
+    - scripts/*.sh
+    - appspec.yml
+    - .env
   discard-paths: yes

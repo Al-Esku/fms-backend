@@ -22,4 +22,5 @@ artifacts:
     - scripts/*.sh
     - appspec.yml
     - .env
+    - src/main/resources/production.properties
   discard-paths: yes

@@ -30,6 +30,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-security-test'
     implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'org.springframework.boot:spring-boot-devtools'
 }
 
 tasks.named('test') {

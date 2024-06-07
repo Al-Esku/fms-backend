@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo pkill -f 'java -jar'
+fuser -k 5000/tcp

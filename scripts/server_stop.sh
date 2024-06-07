@@ -1,2 +1,2 @@
 #!/bin/bash
-fuser -k 5000/tcp
+sudo fuser -k 5000/tcp

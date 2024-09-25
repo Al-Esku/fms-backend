@@ -1,0 +1,19 @@
+Resources:
+  SpringOnLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: com.fencing.midsouth.fmswebsite.handler.LambdaHandler::handleRequest
+      Runtime: java17
+      Architectures:
+        - x86_64
+      MemorySize: 2048
+      SnapStart:
+        ApplyOn: "PublishedVersions"
+      AutoPublishAlias: "prod"
+      Events:
+        FencingMidSouth:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY

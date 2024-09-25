@@ -32,6 +32,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'org.springframework.boot:spring-boot-devtools'
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot3:2.0.3'
 }
 
 tasks.named('test') {
